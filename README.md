@@ -4,7 +4,7 @@
   <img src="public/luria_logo.svg" alt="Luria Logo" width="200"/>
   <br/>
   <p><strong>Plataforma completa de automação e chat inteligente com IA</strong></p>
-  <p>Powered by <a href="https://pxdata.com.br">PXData</a></p>
+  <p>Powered by <a href="https://pxdata.ai">PXData</a></p>
 </div>
 
 ## 🚀 Sobre o Luria
@@ -103,9 +103,24 @@ Este repositório contém apenas o componente embedded público. Para contribui�
 
 Use as [Issues do GitHub](https://github.com/pxcreativelab/luria-embedded/issues) para reportar bugs ou solicitar novas funcionalidades.
 
-## 📄 Licença
+## 📄 Licenciamento
 
-MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este software é proprietário e confidencial da PXData. O uso é permitido apenas sob licença.
+
+### Informações de Licenciamento
+
+- **Tipo**: Licença proprietária
+- **Uso**: Permitido apenas sob licença
+- **Distribuição**: Proibida sem autorização
+- **Modificação**: Proibida sem autorização
+
+### Contato para Licenciamento
+
+- **Email**: contato@pxdata.ai
+- **Website**: https://pxdata.ai
+- **Telefone**: [número de contato]
+
+Para informações sobre licenciamento, entre em contato conosco.
 
 ## 🆘 Suporte
 
@@ -115,7 +130,7 @@ MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## 🏢 Sobre a PXData
 
-Luria é desenvolvido pela [PXData](https://pxdata.com.br), empresa especializada em soluções de IA e automação para empresas.
+Luria é desenvolvido pela [PXData](https://pxdata.ai), empresa especializada em soluções de IA e automação para empresas.
 
 ---
 
@@ -124,6 +139,6 @@ Luria é desenvolvido pela [PXData](https://pxdata.com.br), empresa especializad
   <p>
     <a href="https://luria.ai">Website</a> •
     <a href="https://docs.luria.ai">Documentação</a> •
-    <a href="https://pxdata.com.br">PXData</a>
+    <a href="https://pxdata.ai">PXData</a>
   </p>
 </div>
