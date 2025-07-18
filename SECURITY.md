@@ -10,17 +10,7 @@ A segurança é uma prioridade para o Luria. Se você descobriu uma vulnerabilid
 
 ### 📧 Email Seguro (Recomendado)
 
-Envie um email detalhado para: **security@luria.ai**
-
-### 🔐 PGP Key (Opcional)
-
-Para comunicações mais seguras, você pode usar nossa chave PGP:
-
-```
------BEGIN PGP PUBLIC KEY BLOCK-----
-[Chave PGP será adicionada aqui]
------END PGP PUBLIC KEY BLOCK-----
-```
+Envie um email detalhado para: **security@pxdata.ai**
 
 ## 📋 Informações Necessárias
 
@@ -138,9 +128,9 @@ Configuração:
 ## 🏢 Contato da Equipe de Segurança
 
 ### Equipe Principal
-- **Líder de Segurança**: security@luria.ai
-- **CTO**: cto@luria.ai
-- **Suporte**: suporte@luria.ai
+- **Líder de Segurança**: security@pxdata.ai
+- **CTO**: cto@pxdata.ai
+- **Suporte**: suporte@pxdata.ai
 
 ### Escalação
 Para questões urgentes ou críticas, entre em contato diretamente com nossa equipe de segurança.

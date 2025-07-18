@@ -124,7 +124,7 @@ Para informações sobre licenciamento, entre em contato conosco.
 
 ## 🆘 Suporte
 
-- 📧 **Email**: suporte@luria.ai
+- 📧 **Email**: suporte@pxdata.ai
 - 🌐 **Website**: [luria.ai](https://luria.ai)
 - 📖 **Documentação**: [docs.luria.ai](https://docs.luria.ai)
 

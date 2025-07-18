@@ -209,7 +209,7 @@ Violações podem resultar em:
 
 ### Precisa de Ajuda?
 
-- 📧 **Email**: suporte@luria.ai
+- 📧 **Email**: suporte@pxdata.ai
 - 💬 **Issues**: [GitHub Issues](https://github.com/luria/luria/issues)
 - 📖 **Documentação**: [docs.luria.ai](https://docs.luria.ai)
 
