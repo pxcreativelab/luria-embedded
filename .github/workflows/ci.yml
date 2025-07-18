@@ -1,0 +1,126 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run linting
+      run: npm run lint
+      
+    - name: Build embedded
+      run: npm run build:embedded
+      
+    - name: Build ES modules
+      run: npm run build:embedded:es
+      
+    - name: Check build artifacts
+      run: |
+        ls -la dist/embedded/
+        test -f dist/embedded/luria-embedded.umd.js
+        test -f dist/embedded/luria-embedded.es.js
+        test -f dist/embedded/luria-embedded.css
+        test -f dist/embedded/index.d.ts
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+      
+    - name: Check for known vulnerabilities
+      run: |
+        if npm audit --audit-level=high; then
+          echo "High severity vulnerabilities found!"
+          exit 1
+        fi
+
+  deploy:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for production
+      run: |
+        npm run build:embedded
+        npm run build:embedded:es
+        
+    - name: Publish to NPM
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        body: |
+          ## 🚀 Release v${{ github.run_number }}
+          
+          ### 📦 Build Artifacts
+          - UMD Bundle: `luria-embedded.umd.js`
+          - ES Module: `luria-embedded.es.js`
+          - CSS: `luria-embedded.css`
+          - TypeScript Types: `index.d.ts`
+          
+          ### 🔗 CDN Links
+          - **CSS**: https://cdn.jsdelivr.net/npm/luria@${{ github.run_number }}/dist/embedded/luria-embedded.css
+          - **UMD**: https://cdn.jsdelivr.net/npm/luria@${{ github.run_number }}/dist/embedded/luria-embedded.umd.js
+          - **ES**: https://cdn.jsdelivr.net/npm/luria@${{ github.run_number }}/dist/embedded/luria-embedded.es.js
+          
+          ### 📋 Changes
+          - Automated release from CI/CD pipeline
+        draft: false
+        prerelease: false 

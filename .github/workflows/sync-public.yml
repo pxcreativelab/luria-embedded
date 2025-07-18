@@ -1,0 +1,163 @@
+name: Sync to Public Repository
+
+on:
+  push:
+    branches: [main, feat/luria-embedded]
+    paths: 
+      - 'src/embedded/**'
+      - 'vite.embedded.config.ts'
+      - 'package.json'
+      - 'examples/embedded/**'
+      - 'README.md'
+      - 'LICENSE'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'SECURITY.md'
+      - 'CHANGELOG.md'
+  workflow_dispatch:  # Permite execução manual
+
+jobs:
+  sync-to-public:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout private repository
+      uses: actions/checkout@v4
+      with:
+        path: private-repo
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        cd private-repo
+        npm ci
+        
+    - name: Build embedded
+      run: |
+        cd private-repo
+        npm run build:embedded
+        
+    - name: Checkout public repository
+      uses: actions/checkout@v4
+      with:
+        repository: pxcreativelab/luria-embedded
+        token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        path: public-repo
+        
+    - name: Sync files to public repository
+      run: |
+        # Limpar repositório público (exceto .git)
+        cd public-repo
+        find . -mindepth 1 -not -path "./.git*" -delete
+        
+        # Copiar arquivos públicos
+        cp -r ../private-repo/README.md ./
+        cp -r ../private-repo/LICENSE ./
+        cp -r ../private-repo/CONTRIBUTING.md ./
+        cp -r ../private-repo/CODE_OF_CONDUCT.md ./
+        cp -r ../private-repo/SECURITY.md ./
+        cp -r ../private-repo/CHANGELOG.md ./
+        
+        # Configurações
+        cp -r ../private-repo/package.json ./
+        cp -r ../private-repo/vite.embedded.config.ts ./
+        cp -r ../private-repo/tsconfig.json ./
+        cp -r ../private-repo/tailwind.config.ts ./
+        cp -r ../private-repo/postcss.config.js ./
+        cp -r ../private-repo/.gitignore ./
+        
+        # GitHub templates e workflows
+        cp -r ../private-repo/.github ./
+        
+        # Exemplos
+        cp -r ../private-repo/examples ./
+        
+        # Build do embedded
+        mkdir -p dist
+        cp -r ../private-repo/dist/embedded ./dist/
+        
+        # Assets públicos
+        mkdir -p public
+        cp ../private-repo/public/luria_logo.svg ./public/ 2>/dev/null || echo "Logo não encontrado"
+        cp ../private-repo/public/favicon.ico ./public/ 2>/dev/null || echo "Favicon não encontrado"
+        
+    - name: Configure package.json for public
+      run: |
+        cd public-repo
+        node -e "
+        const pkg = require('./package.json');
+        pkg.name = 'luria-embedded';
+        pkg.private = false;
+        pkg.files = ['dist/embedded', 'README.md', 'LICENSE'];
+        pkg.scripts = {
+          'build:embedded': 'vite build --config vite.embedded.config.ts',
+          'build:embedded:es': 'vite build --config vite.embedded.config.ts --mode es',
+          'prepublishOnly': 'npm run build:embedded && npm run build:embedded:es'
+        };
+        pkg.repository = {
+          'type': 'git',
+          'url': 'https://github.com/pxcreativelab/luria-embedded.git'
+        };
+        pkg.homepage = 'https://github.com/pxcreativelab/luria-embedded#readme';
+        pkg.bugs = {
+          'url': 'https://github.com/pxcreativelab/luria-embedded/issues'
+        };
+        fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
+        "
+        
+    - name: Commit and push to public repository
+      run: |
+        cd public-repo
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        git add .
+        
+        # Verificar se há mudanças
+        if git diff --staged --quiet; then
+          echo "Nenhuma mudança detectada"
+        else
+          git commit -m "feat: sync from private repo - Build embedded atualizado - Documentação sincronizada - Exemplos atualizados - Configurações públicas - Triggered by: ${{ github.event.head_commit.message }}"
+          git push origin main
+        fi
+        
+    - name: Publish to NPM
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd public-repo
+        npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+    - name: Create Release
+      if: github.ref == 'refs/heads/main'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        body: |
+          ## 🚀 Release v${{ github.run_number }}
+          
+          ### 📦 Build Artifacts
+          - UMD Bundle: `luria-embedded.umd.js`
+          - ES Module: `luria-embedded.es.js`
+          - CSS: `luria-embedded.css`
+          - TypeScript Types: `index.d.ts`
+          
+          ### 🔗 CDN Links
+          - **CSS**: https://cdn.jsdelivr.net/npm/luria-embedded@${{ github.run_number }}/dist/embedded/luria-embedded.css
+          - **UMD**: https://cdn.jsdelivr.net/npm/luria-embedded@${{ github.run_number }}/dist/embedded/luria-embedded.umd.js
+          - **ES**: https://cdn.jsdelivr.net/npm/luria-embedded@${{ github.run_number }}/dist/embedded/luria-embedded.es.js
+          
+          ### 📋 Changes
+          - Automated sync from private repository
+          - Build embedded updated
+          - Documentation synchronized
+        draft: false
+        prerelease: false 

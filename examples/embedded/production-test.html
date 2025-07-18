@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luria Embedded - Demonstração de Integração</title>
+    <link rel="stylesheet" href="/dist/embedded/luria-embedded.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a202c;
+            line-height: 1.6;
+            overflow-x: auto !important;
+            overflow-y: auto !important;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .demo-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-card p {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .config-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+        }
+
+        .config-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-item label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .config-item input {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+        }
+
+        .config-item input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .config-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        /* Container do Chat Embedded */
+        .chat-container {
+            height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            z-index: 1;
+        }
+
+        .chat-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #718096;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .chat-placeholder h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        .chat-placeholder p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Status indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status.pending {
+            background: #fef5e7;
+            color: #744210;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Luria Embedded Styles - Isolados para não afetar o scroll da página */
+        .chat-container .luria-embedded-root {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+
+        .chat-container .embedded-chat-wrapper {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+
+        /* Garantir que o body e html tenham scroll normal */
+        html, body {
+            overflow-x: auto !important;
+            overflow-y: auto !important;
+        }
+
+        /* Garantir que o container principal tenha scroll */
+        .container {
+            overflow: visible !important;
+        }
+
+        /* Isolar completamente os estilos do embedded */
+        .chat-container * {
+            box-sizing: border-box;
+        }
+
+        /* Garantir que elementos fora do chat não sejam afetados */
+        .container *:not(.chat-container *) {
+            overflow: visible !important;
+        }
+
+        /* Forçar scroll na página principal */
+        html {
+            scroll-behavior: smooth;
+            overflow-x: auto !important;
+            overflow-y: auto !important;
+        }
+
+        /* Sobrescrever qualquer CSS global que possa estar interferindo */
+        html, body, .container, .demo-grid, .config-section {
+            overflow: visible !important;
+            overflow-x: auto !important;
+            overflow-y: auto !important;
+        }
+
+        /* Garantir que apenas o chat-container tenha overflow hidden */
+        .chat-container {
+            overflow: hidden !important;
+        }
+
+        /* Isolar completamente o CSS do embedded */
+        .chat-container iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Luria Embedded</h1>
+            <p>Demonstração profissional de integração do chat inteligente</p>
+        </div>
+
+        <div class="demo-grid">
+            <div class="demo-card">
+                <h3>💬 Luria Embedded</h3>
+                <p>Interface completa do chat inteligente com todas as funcionalidades ativas. Ideal para integração em dashboards, aplicações web e sistemas empresariais.</p>
+                
+                <div class="chat-container" id="main-chat">
+                    <div class="chat-placeholder">
+                        <div>
+                            <h4>Luria Chat</h4>
+                            <p>Clique em "Inicializar Chat" para começar a conversar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>⚙️ Configurações de Integração</h3>
+            <p style="color: #718096; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Configure as opções abaixo para personalizar a experiência do Luria Embedded em sua aplicação.
+            </p>
+            
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="auth-token">Token de Autenticação</label>
+                    <input type="text" id="auth-token" placeholder="Bearer token ou deixe vazio para modo demo">
+                </div>
+                
+                <div class="config-item">
+                    <label for="refresh-token">Refresh Token</label>
+                    <input type="text" id="refresh-token" placeholder="Refresh token para renovação automática">
+                </div>
+                
+                <div class="config-item">
+                    <label for="api-url">URL da API</label>
+                    <input type="text" id="api-url" value="http://demo.localhost:8080" placeholder="URL base da API">
+                </div>
+                
+                <div class="config-item">
+                    <label for="theme">Tema</label>
+                    <select id="theme" style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <option value="light">Claro</option>
+                        <option value="dark">Escuro</option>
+                        <option value="auto">Automático</option>
+                    </select>
+                </div>
+                
+                <div class="config-item">
+                    <label for="language">Idioma</label>
+                    <select id="language" style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <option value="pt-BR">Português</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+                
+                <div class="config-item">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-sidebar"> Mostrar histórico de conversas
+                    </label>
+                </div>
+                
+                <div class="config-item">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="compact-mode"> Modo compacto
+                    </label>
+                </div>
+                
+                <div class="config-item">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="hide-navigation" checked> Ocultar navegação
+                    </label>
+                </div>
+                
+                <div class="config-item">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="floating-mode"> Modo flutuante
+                    </label>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                <button class="btn btn-primary" onclick="initializeChats()">
+                    🚀 Inicializar Chat
+                </button>
+                <button class="btn btn-secondary" onclick="resetChats()">
+                    🔄 Resetar
+                </button>
+                <button class="btn btn-success" onclick="showIntegrationCode()">
+                    📋 Código de Integração
+                </button>
+            </div>
+        </div>
+
+        <div class="config-section" id="integration-code" style="display: none;">
+            <h3>📋 Código de Integração</h3>
+            <p style="color: #718096; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Copie e cole este código em sua aplicação para integrar o Luria Embedded.
+            </p>
+            
+            <pre style="background: #1a202c; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5;"><code id="code-example">// Exemplo de integração
+const config = {
+    authMode: 'token',
+    apiBaseUrl: 'http://demo.localhost:8080',
+    token: 'seu-token-aqui',
+    showSidebar: false,
+    hideNavigation: true,
+    customization: {
+        maxWidth: '100%',
+        maxHeight: '100%',
+        borderRadius: '8px'
+    }
+};
+
+// Inicializar
+window.LuriaEmbedded.init(config);
+window.LuriaEmbedded.render('#seu-container');</code></pre>
+        </div>
+    </div>
+
+    <script src="/dist/embedded/luria-embedded.umd.js"></script>
+    <script>
+        let chatsInitialized = false;
+
+        function initializeChats() {
+            if (chatsInitialized) {
+                alert('Os chats já foram inicializados!');
+                return;
+            }
+
+            const authToken = document.getElementById('auth-token').value.trim();
+            const refreshToken = document.getElementById('refresh-token').value.trim();
+            const apiUrl = document.getElementById('api-url').value.trim();
+            const theme = document.getElementById('theme').value;
+            const language = document.getElementById('language').value;
+            
+            const config = {
+                authMode: authToken ? 'token' : 'postMessage',
+                apiBaseUrl: apiUrl || 'http://demo.localhost:8080',
+                parentOrigin: window.location.origin,
+                allowedOrigins: ['*'],
+                mockMode: !authToken,
+                corsMode: 'permissive',
+                token: authToken || undefined,
+                refreshToken: refreshToken || undefined,
+                theme: theme,
+                language: language,
+                showSidebar: document.getElementById('show-sidebar').checked,
+                hideNavigation: document.getElementById('hide-navigation').checked,
+                customization: {
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    borderRadius: '8px',
+                    compactMode: document.getElementById('compact-mode').checked,
+                    floatingMode: document.getElementById('floating-mode').checked
+                }
+            };
+
+            try {
+                // Inicializar Luria
+                window.LuriaEmbedded.init(config);
+                
+                // Renderizar no chat principal
+                window.LuriaEmbedded.render('#main-chat');
+                
+                chatsInitialized = true;
+                
+                // Atualizar botão
+                document.querySelector('.btn-primary').textContent = '✅ Chat Inicializado';
+                document.querySelector('.btn-primary').disabled = true;
+                
+                console.log('✅ Luria Embedded inicializado com sucesso!');
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Luria:', error);
+                alert('Erro ao inicializar: ' + error.message);
+            }
+        }
+
+        function resetChats() {
+            // Limpar containers
+            document.getElementById('main-chat').innerHTML = `
+                <div class="chat-placeholder">
+                    <div>
+                        <h4>Luria Chat</h4>
+                        <p>Clique em "Inicializar Chat" para começar a conversar</p>
+                    </div>
+                </div>
+            `;
+            
+            chatsInitialized = false;
+            
+            // Resetar botão
+            document.querySelector('.btn-primary').textContent = '🚀 Inicializar Chat';
+            document.querySelector('.btn-primary').disabled = false;
+            
+            console.log('🔄 Chat resetado');
+        }
+
+        function showIntegrationCode() {
+            const authToken = document.getElementById('auth-token').value.trim();
+            const apiUrl = document.getElementById('api-url').value.trim();
+            const showSidebar = document.getElementById('show-sidebar').checked;
+            const hideNavigation = document.getElementById('hide-navigation').checked;
+            const compactMode = document.getElementById('compact-mode').checked;
+            const floatingMode = document.getElementById('floating-mode').checked;
+            
+            const refreshToken = document.getElementById('refresh-token').value.trim();
+            const codeExample = `// Configuração do Luria Embedded
+const config = {
+    authMode: '${authToken ? 'token' : 'postMessage'}',
+    apiBaseUrl: '${apiUrl || 'http://demo.localhost:8080'}',
+    parentOrigin: window.location.origin,
+    allowedOrigins: ['*'],
+    mockMode: ${!authToken},
+    corsMode: 'permissive',
+    ${authToken ? `token: '${authToken}',` : ''}
+    ${refreshToken ? `refreshToken: '${refreshToken}',` : ''}
+    showSidebar: ${showSidebar},
+    hideNavigation: ${hideNavigation},
+    customization: {
+        maxWidth: '100%',
+        maxHeight: '100%',
+        borderRadius: '8px',
+        compactMode: ${compactMode},
+        floatingMode: ${floatingMode}
+    }
+};
+
+// Inicializar Luria Embedded
+window.LuriaEmbedded.init(config);
+
+// Renderizar no container desejado
+window.LuriaEmbedded.render('#seu-container-id');`;
+            
+            document.getElementById('code-example').textContent = codeExample;
+            document.getElementById('integration-code').style.display = 'block';
+            
+            // Scroll suave para o código
+            document.getElementById('integration-code').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Listener para LURIA_READY
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LURIA_READY') {
+                console.log('✅ LURIA_READY recebido');
+            }
+        });
+
+        // Listener para postMessage de token
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LURIA_REQUEST_TOKEN') {
+                const configuredToken = document.getElementById('auth-token').value.trim();
+                const configuredRefreshToken = document.getElementById('refresh-token').value.trim();
+                const tokenToSend = configuredToken || 'demo-token-' + Date.now();
+                const refreshTokenToSend = configuredRefreshToken || 'demo-refresh-token-' + Date.now();
+                
+                setTimeout(() => {
+                    window.postMessage({
+                        type: 'LURIA_TOKEN',
+                        payload: { 
+                            token: tokenToSend,
+                            refreshToken: refreshTokenToSend
+                        }
+                    }, '*');
+                }, 500);
+            }
+            
+            // Listener para refresh token
+            if (event.data.type === 'LURIA_REQUEST_REFRESH_TOKEN') {
+                const configuredRefreshToken = document.getElementById('refresh-token').value.trim();
+                const refreshTokenToSend = configuredRefreshToken || 'demo-refresh-token-' + Date.now();
+                
+                setTimeout(() => {
+                    window.postMessage({
+                        type: 'LURIA_REFRESH_TOKEN_RESPONSE',
+                        payload: { 
+                            success: true,
+                            token: 'new-demo-token-' + Date.now(),
+                            refreshToken: refreshTokenToSend
+                        }
+                    }, '*');
+                }, 500);
+            }
+        });
+
+        // Inicializar automaticamente após 2 segundos
+        setTimeout(() => {
+            if (!chatsInitialized) {
+                console.log('🔄 Inicialização automática em 2 segundos...');
+            }
+        }, 2000);
+    </script>
+</body>
+</html> 

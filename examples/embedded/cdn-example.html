@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luria Embedded - Exemplo CDN</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+        }
+        
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .chat-container {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        
+        .config-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Luria Embedded</h1>
+            <p>Exemplo de integração via CDN</p>
+        </div>
+        
+        <div class="content">
+            <div class="demo-section">
+                <h2>🎮 Controles</h2>
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="initLuria()">Inicializar</button>
+                    <button class="btn btn-secondary" onclick="changeTheme()">Alternar Tema</button>
+                    <button class="btn btn-success" onclick="updateToken()">Atualizar Token</button>
+                    <button class="btn btn-danger" onclick="destroyLuria()">Destruir</button>
+                </div>
+                
+                <div class="config-display" id="config-display">
+                    Configuração atual será exibida aqui...
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>💬 Chat Luria</h2>
+                <div class="chat-container" id="luria-chat">
+                    <div class="status" id="status">Aguardando inicialização...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSS do Luria Embedded -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/luria-embedded@latest/dist/embedded/luria-embedded.css">
+    
+    <!-- Script do Luria Embedded -->
+    <script src="https://cdn.jsdelivr.net/npm/luria-embedded@latest/dist/embedded/luria-embedded.umd.js"></script>
+    
+    <script>
+        let luriaInstance = null;
+        let currentTheme = 'light';
+        
+        // Configuração padrão
+        const defaultConfig = {
+            apiBaseUrl: 'https://api.luria.com.br',
+            authMode: 'token',
+            parentOrigin: window.location.origin,
+            theme: 'light',
+            customization: {
+                primaryColor: '#007bff',
+                secondaryColor: '#6c757d'
+            }
+        };
+        
+        // Função para inicializar o Luria
+        function initLuria() {
+            try {
+                if (luriaInstance) {
+                    luriaInstance.destroy();
+                }
+                
+                updateStatus('Inicializando...');
+                
+                // Verificar se o Luria está disponível
+                if (typeof window.LuriaEmbedded === 'undefined') {
+                    updateStatus('Erro: LuriaEmbedded não encontrado');
+                    return;
+                }
+                
+                // Inicializar
+                luriaInstance = window.LuriaEmbedded.init(defaultConfig);
+                
+                // Renderizar
+                luriaInstance.render('#luria-chat');
+                
+                updateStatus('Inicializado com sucesso');
+                updateConfigDisplay();
+                
+            } catch (error) {
+                console.error('Erro ao inicializar Luria:', error);
+                updateStatus('Erro: ' + error.message);
+            }
+        }
+        
+        // Função para alternar tema
+        function changeTheme() {
+            if (!luriaInstance) {
+                alert('Luria não está inicializado');
+                return;
+            }
+            
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            try {
+                luriaInstance.updateTheme(currentTheme);
+                updateStatus('Tema alterado para: ' + currentTheme);
+                updateConfigDisplay();
+            } catch (error) {
+                console.error('Erro ao alterar tema:', error);
+                updateStatus('Erro ao alterar tema');
+            }
+        }
+        
+        // Função para atualizar token
+        function updateToken() {
+            if (!luriaInstance) {
+                alert('Luria não está inicializado');
+                return;
+            }
+            
+            const newToken = prompt('Digite o novo token:');
+            if (newToken) {
+                try {
+                    luriaInstance.updateToken(newToken);
+                    updateStatus('Token atualizado');
+                } catch (error) {
+                    console.error('Erro ao atualizar token:', error);
+                    updateStatus('Erro ao atualizar token');
+                }
+            }
+        }
+        
+        // Função para destruir instância
+        function destroyLuria() {
+            if (luriaInstance) {
+                try {
+                    luriaInstance.destroy();
+                    luriaInstance = null;
+                    updateStatus('Destruído com sucesso');
+                    updateConfigDisplay();
+                } catch (error) {
+                    console.error('Erro ao destruir:', error);
+                    updateStatus('Erro ao destruir');
+                }
+            } else {
+                updateStatus('Nada para destruir');
+            }
+        }
+        
+        // Função para atualizar status
+        function updateStatus(message) {
+            const statusElement = document.getElementById('status');
+            if (statusElement) {
+                statusElement.textContent = message;
+            }
+            console.log('Status:', message);
+        }
+        
+        // Função para atualizar display de configuração
+        function updateConfigDisplay() {
+            const configDisplay = document.getElementById('config-display');
+            if (configDisplay) {
+                const config = {
+                    ...defaultConfig,
+                    theme: currentTheme,
+                    instance: luriaInstance ? 'Ativo' : 'Inativo'
+                };
+                configDisplay.textContent = JSON.stringify(config, null, 2);
+            }
+        }
+        
+        // Inicializar display de configuração
+        updateConfigDisplay();
+        
+        // Verificar se o Luria foi carregado
+        window.addEventListener('load', function() {
+            if (typeof window.LuriaEmbedded !== 'undefined') {
+                updateStatus('Luria carregado - pronto para inicializar');
+            } else {
+                updateStatus('Erro: Luria não foi carregado');
+            }
+        });
+    </script>
+</body>
+</html> 
