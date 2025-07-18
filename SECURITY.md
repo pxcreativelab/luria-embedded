@@ -10,7 +10,7 @@ A segurança é uma prioridade para o Luria. Se você descobriu uma vulnerabilid
 
 ### 📧 Email Seguro (Recomendado)
 
-Envie um email detalhado para: **security@pxdata.ai**
+Envie um email detalhado para: **contato@pxdata.ai**
 
 ## 📋 Informações Necessárias
 
@@ -61,57 +61,11 @@ Configuração:
 
 ## ⏱️ Processo de Resposta
 
-### Timeline
-
-1. **24 horas**: Confirmação de recebimento
-2. **72 horas**: Avaliação inicial e classificação
-3. **7 dias**: Atualização sobre o progresso
-4. **30 dias**: Resolução ou plano detalhado
-
 ### Comunicação
 
 - Você receberá atualizações regulares sobre o progresso
 - Seremos transparentes sobre o que está sendo feito
 - Você será notificado quando a correção for lançada
-
-## 🏆 Programa de Bug Bounty
-
-### Elegibilidade
-
-- Vulnerabilidades em componentes públicos
-- Relatórios bem documentados
-- Descobertas originais (não reportadas anteriormente)
-
-### Recompensas
-
-- **Crítica**: $500 - $1000
-- **Alta**: $200 - $500
-- **Média**: $50 - $200
-- **Baixa**: $25 - $50
-
-### Critérios de Avaliação
-
-- **Impacto**: Quão séria é a vulnerabilidade
-- **Probabilidade**: Quão fácil é explorar
-- **Qualidade**: Qualidade do relatório
-- **Originalidade**: Se é uma descoberta nova
-
-## 🔒 Melhores Práticas de Segurança
-
-### Para Desenvolvedores
-
-1. **Validação**: Sempre valide inputs do usuário
-2. **Sanitização**: Sanitize dados antes de renderizar
-3. **HTTPS**: Use sempre HTTPS em produção
-4. **CORS**: Configure CORS adequadamente
-5. **Tokens**: Use tokens seguros e com expiração
-
-### Para Usuários
-
-1. **Atualizações**: Mantenha o Luria atualizado
-2. **Configuração**: Use configurações seguras
-3. **Tokens**: Não exponha tokens em código cliente
-4. **Origem**: Configure `parentOrigin` corretamente
 
 ## 📚 Recursos de Segurança
 
