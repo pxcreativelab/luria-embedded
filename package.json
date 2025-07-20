@@ -1,0 +1,58 @@
+{
+  "name": "luria-embedded",
+  "version": "1.0.5",
+  "description": "Luria Embedded - Componente React para integração de chat inteligente com IA",
+  "type": "module",
+  "main": "dist/embedded/luria-embedded.umd.js",
+  "module": "dist/embedded/luria-embedded.es.js",
+  "types": "dist/embedded/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/embedded/luria-embedded.es.js",
+      "require": "./dist/embedded/luria-embedded.umd.js",
+      "types": "./dist/embedded/index.d.ts"
+    },
+    "./embedded": {
+      "import": "./dist/embedded/luria-embedded.es.js",
+      "require": "./dist/embedded/luria-embedded.umd.js",
+      "types": "./dist/embedded/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/embedded",
+    "README.embedded.md"
+  ],
+  "scripts": {
+    "build:embedded": "vite build --config config/vite.embedded.config.ts",
+    "check-security": "node scripts/check-security.js",
+    "prepublishOnly": "npm run build:embedded && npm run check-security"
+  },
+  "peerDependencies": {
+    "@xyflow/react": "^12.4.4",
+    "i18next": "^22.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-i18next": "^12.0.0"
+  },
+  "keywords": [
+    "luria",
+    "embedded",
+    "chat",
+    "ai",
+    "react",
+    "typescript",
+    "intelligence",
+    "assistant",
+    "pxdata"
+  ],
+  "author": "PXData",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pxcreativelab/luria-embedded.git"
+  },
+  "homepage": "https://github.com/pxcreativelab/luria-embedded#readme",
+  "bugs": {
+    "url": "https://github.com/pxcreativelab/luria-embedded/issues"
+  }
+} 

@@ -1,0 +1,95 @@
+# Environment variables (CRÍTICO - nunca incluir)
+.env*
+!.env.example
+
+# Development files
+src/
+examples/
+tests/
+.github/
+.storybook/
+storybook-static/
+
+# Configuration files
+vite.config.ts
+vite.embedded.config.ts
+tailwind.config.ts
+postcss.config.js
+eslint.config.js
+tsconfig*.json
+rollup.config.js
+components.json
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts
+scripts/
+build-script.sh
+custom-scripts.js
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+.nyc_output
+
+# Cache directories
+.npm
+.eslintcache
+.cache
+.parcel-cache
+
+# Temporary folders
+tmp/
+temp/
+
+# Local development
+*.local
+.local/
+
+# Backup files
+*.backup
+*.bak
+
+# Lock files (keep only one)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Public assets (not needed in npm)
+public/
+
+# Source maps (optional)
+*.map
+
+# TypeScript source maps
+*.tsbuildinfo 

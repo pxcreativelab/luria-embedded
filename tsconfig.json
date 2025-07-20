@@ -1,0 +1,39 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "target": "es2020", // Atualizado para uma versão mais recente
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es2020",
+      "es2017"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": false,
+    "declaration": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node", 
+    "types": ["vite/client", "node"] // Adicionado "node" para resolver problemas de tipos do NodeJS
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",  // Adicionado para incluir arquivos React
+    "src/**/*.d.ts"
+  ]
+}
