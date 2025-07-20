@@ -43,7 +43,23 @@ function checkSensitiveFiles() {
   
   // Verificar package.json files
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  const files = packageJson.files || [];
+  let files = packageJson.files || [];
+  
+  // Lidar com casos onde files pode ser string ou array
+  if (typeof files === 'string') {
+    try {
+      files = JSON.parse(files);
+    } catch (e) {
+      console.log('⚠️  Campo "files" é string mas não é JSON válido, tratando como array vazio');
+      files = [];
+    }
+  }
+  
+  // Garantir que files é um array
+  if (!Array.isArray(files)) {
+    console.log('⚠️  Campo "files" não é um array, tratando como array vazio');
+    files = [];
+  }
   
   console.log('\n📦 Verificando campo "files" do package.json...');
   console.log(`   Arquivos incluídos: ${files.join(', ')}`);

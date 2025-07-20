@@ -93,3 +93,12 @@ public/
 
 # TypeScript source maps
 *.tsbuildinfo 
+
+# Videos and images
+*.mp4
+*.png
+*.jpg
+*.svg
+
+# Environment variables
+.env*

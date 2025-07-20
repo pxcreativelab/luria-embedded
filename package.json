@@ -19,8 +19,12 @@
     }
   },
   "files": [
-    "dist/embedded",
-    "README.embedded.md"
+    "dist/embedded/luria-embedded.umd.js",
+    "dist/embedded/luria-embedded.es.js",
+    "dist/embedded/luria-embedded.css",
+    "dist/embedded/index.d.ts",
+    "dist/embedded/locales",
+    "README.md"
   ],
   "scripts": {
     "build:embedded": "vite build --config config/vite.embedded.config.ts",
@@ -45,7 +49,7 @@
     "assistant",
     "pxdata"
   ],
-  "author": "PXData",
+  "author": "PX Data",
   "license": "MIT",
   "repository": {
     "type": "git",

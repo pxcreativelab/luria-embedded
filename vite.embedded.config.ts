@@ -2,6 +2,47 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import dts from "vite-plugin-dts";
+import fs from "fs";
+
+// Plugin para copiar arquivos de tradução
+function copyLocalesPlugin() {
+  return {
+    name: 'copy-locales',
+    writeBundle() {
+      const localesDir = path.resolve(__dirname, '../src/i18n/locales');
+      const outputDir = path.resolve(__dirname, '../dist/embedded/locales');
+      
+      // Criar diretório se não existir
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      
+      // Copiar arquivos de tradução
+      const locales = [
+        { source: 'en.json', dest: 'en.json' },
+        { source: 'pt-BR.json', dest: 'pt-br.json' },  // Usar nome consistente
+        { source: 'es.json', dest: 'es.json' }
+      ];
+      locales.forEach(({ source, dest }) => {
+        const sourcePath = path.join(localesDir, source);
+        const destPath = path.join(outputDir, dest);
+        
+        if (fs.existsSync(sourcePath)) {
+          fs.copyFileSync(sourcePath, destPath);
+          console.log(`✅ Copiado: ${source} → ${dest}`);
+          
+          // Verificar se o arquivo foi copiado corretamente
+          if (fs.existsSync(destPath)) {
+            const stats = fs.statSync(destPath);
+            console.log(`📁 Arquivo copiado: ${destPath} (${stats.size} bytes)`);
+          }
+        } else {
+          console.warn(`⚠️ Arquivo não encontrado: ${sourcePath}`);
+        }
+      });
+    }
+  };
+}
 
 // Configuração otimizada para build do Luria Embedded
 export default defineConfig(() => {
@@ -14,7 +55,8 @@ export default defineConfig(() => {
         include: ['../src/embedded/**/*'],
         exclude: ['../src/embedded/**/*.stories.tsx', '../src/embedded/**/*.test.tsx'],
         logLevel: 'error' // Apenas erros
-      })
+      }),
+      copyLocalesPlugin()
     ],
     resolve: {
       alias: {
