@@ -1,6 +1,6 @@
 {
   "name": "luria-embedded",
-  "version": "1.0.5",
+  "version": "1.0.0",
   "description": "Luria Embedded - Componente React para integração de chat inteligente com IA",
   "type": "module",
   "main": "dist/embedded/luria-embedded.umd.js",
